@@ -137,7 +137,7 @@ if (hojaPersonas) {
       } catch (e: any) {
         resumen.personas.errores.push(`Fila ${i + 2} (${nombre}): ${mensajeError(e)}`);
       }
-    });).
+    } // <-- AQUÍ: Reemplaza el });). anterior por una sola llave de cierre "}" para tu bucle for
   }
 
   // ---------- Grupos (cada uno crea sus subgrupos A y B automáticamente) ----------
