@@ -15,3 +15,9 @@ export const NOMBRE_ESTADO: Record<string, string> = {
   INACTIVO: "Inactivo",
   LICENCIA: "Licencia",
 };
+export const ESTADOS_SOCIO = {
+  ACTIVO: "ACTIVO",
+  INACTIVO: "INACTIVO",
+  SUSPENDIDO: "SUSPENDIDO",
+  LICENCIA: "LICENCIA"
+};
