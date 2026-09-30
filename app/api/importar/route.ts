@@ -144,13 +144,20 @@ for (let i = 0; i < filas.length; i++) {
   }
 
   // ---------- Grupos (cada uno crea sus subgrupos A y B automáticamente) ----------
+    // ---------- Grupos (cada uno crea sus subgrupos A y B automáticamente) ----------
   const hojaGrupos = workbook.Sheets["Grupos"];
   if (hojaGrupos) {
     const filas: any[] = XLSX.utils.sheet_to_json(hojaGrupos, { defval: "" });
-    for (const [i, fila] of filas.entries()) {
-      const nombre = texto(fila, "Nombre");
+    
+    // Cambiado a bucle indexado clásico para total compatibilidad
+    for (let i = 0; i < filas.length; i++) {
+      const fila = filas[i];
+      const nombre = texto(fila, "Nombre") || fila.nombre;
+      
       if (!nombre) continue;
+      
       try {
+
         const grupo = await prisma.grupo.create({
           data: {
             empresaId,
