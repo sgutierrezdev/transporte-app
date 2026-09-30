@@ -1,0 +1,149 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, "Segoe UI", Arial, sans-serif;
+  background: #f4f6fb;
+  color: #1e2761;
+}
+
+input,
+button {
+  font-family: inherit;
+  font-size: 14px;
+}
+
+/* ---------- Panel lateral (dashboard) ---------- */
+
+.dash-shell {
+  display: flex;
+  min-height: 100vh;
+}
+
+.dash-sidebar {
+  width: 220px;
+  flex-shrink: 0;
+  background: #1e2761;
+  color: #fff;
+  padding: 20px 14px;
+  position: sticky;
+  top: 0;
+  align-self: flex-start;
+  height: 100vh;
+  overflow-y: auto;
+  z-index: 50;
+}
+
+.dash-nav-titulo {
+  font-size: 11px;
+  color: #cadcfc;
+  opacity: 0.85;
+  margin: 18px 8px 6px;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.dash-nav-item {
+  display: block;
+  padding: 9px 10px;
+  border-radius: 8px;
+  font-size: 13px;
+  color: #fff;
+  opacity: 0.85;
+  text-decoration: none;
+}
+
+.dash-nav-item:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.dash-nav-item.active {
+  background: rgba(255, 255, 255, 0.16);
+  opacity: 1;
+  font-weight: 500;
+}
+
+.dash-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.dash-mobile-bar {
+  display: none;
+}
+
+.dash-hamburger,
+.dash-cerrar-movil {
+  background: transparent;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+  color: inherit;
+  padding: 4px;
+}
+
+.dash-cerrar-movil {
+  display: none;
+}
+
+.dash-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 40;
+  display: none;
+}
+
+@media (max-width: 860px) {
+  .dash-sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    transform: translateX(-100%);
+    transition: transform 0.2s ease;
+    width: 240px;
+  }
+
+  .dash-sidebar.open {
+    transform: translateX(0);
+  }
+
+  .dash-cerrar-movil {
+    display: block;
+    color: #fff;
+  }
+
+  .dash-mobile-bar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    background: #fff;
+    border-bottom: 0.5px solid #d9deee;
+    color: #1e2761;
+    position: sticky;
+    top: 0;
+    z-index: 30;
+  }
+
+  .dash-overlay {
+    display: block;
+  }
+}
+
+/* Impresión: solo el contenido (comprobantes, reportes), sin menú ni botones */
+@media print {
+  .dash-sidebar,
+  .dash-mobile-bar,
+  .no-imprimir {
+    display: none !important;
+  }
+  .dash-main {
+    margin-left: 0 !important;
+  }
+  body {
+    background: #fff !important;
+  }
+}

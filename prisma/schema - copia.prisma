@@ -1,0 +1,322 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ---------- Organización (multi-tenant) ----------
+
+model Empresa {
+  id        String   @id @default(cuid())
+  nombre    String
+  createdAt DateTime @default(now())
+
+  personas        Persona[]
+  moviles         Movil[]
+  grupos          Grupo[]
+  paradas         Parada[]
+  tiposInfraccion TipoInfraccion[]
+  encomiendas     Encomienda[]
+}
+
+// ---------- Personas (admin, jefes, secretarias, socios, choferes) ----------
+
+enum Rol {
+  ADMIN
+  JEFE_GRUPO
+  SECRETARIA
+  SOCIO
+  CHOFER
+}
+
+enum EstadoPersona {
+  ACTIVO
+  INACTIVO
+  LICENCIA
+}
+
+model Persona {
+  id           String        @id @default(cuid())
+  empresaId    String
+  empresa      Empresa       @relation(fields: [empresaId], references: [id])
+  nombre       String
+  carnet       String?
+  celular      String?
+  email        String?       @unique
+  password     String? // hash bcrypt
+  rol          Rol
+  estado       EstadoPersona @default(ACTIVO)
+  fechaIngreso DateTime?
+  createdAt    DateTime      @default(now())
+
+  paradaComoSecretaria Parada?                @relation("SecretariaParada")
+  movilesComoSocio     Movil[]                @relation("SocioMovil")
+  movilesComoTitular   Movil[]                @relation("ChoferTitularMovil")
+  jefaturas            JefeGrupoHistorial[]   @relation("JefeGrupo")
+  historialComoChofer  MovilChoferHistorial[] @relation("ChoferHistorial")
+  cambiosAutorizados   MovilChoferHistorial[] @relation("AutorizadoPor")
+  reemplazosComoChofer ReemplazoDiario[]      @relation("ChoferReemplazo")
+  permisos             Permiso[]              @relation("PermisoSolicitante")
+  permisosAprobados    Permiso[]              @relation("PermisoAprobadoPor")
+  asistencias          Asistencia[]
+  programacionesComoJefe   ProgramacionDiaria[] @relation("ProgramacionJefe")
+  programacionesComoChofer ProgramacionDiaria[] @relation("ProgramacionChofer")
+
+  @@index([empresaId])
+}
+
+// ---------- Grupos, subgrupos y jefe de línea (con historial) ----------
+
+model Grupo {
+  id        String  @id @default(cuid())
+  empresaId String
+  empresa   Empresa @relation(fields: [empresaId], references: [id])
+  nombre    String // 1, 2, 3...
+
+  subgrupos     Subgrupo[]
+  jefeHistorial JefeGrupoHistorial[]
+  programacion  ProgramacionDiaria[]
+
+  @@unique([empresaId, nombre])
+}
+
+// El jefe de línea puede cambiar; esta tabla guarda quién fue jefe de cada
+// grupo y en qué rango de fechas, para poder reconstruir el histórico exacto.
+model JefeGrupoHistorial {
+  id          String    @id @default(cuid())
+  grupoId     String
+  grupo       Grupo     @relation(fields: [grupoId], references: [id])
+  jefeId      String
+  jefe        Persona   @relation("JefeGrupo", fields: [jefeId], references: [id])
+  fechaInicio DateTime  @db.Date
+  fechaFin    DateTime? @db.Date // null = jefe actual
+  motivo      String?
+  createdAt   DateTime  @default(now())
+
+  @@index([grupoId])
+}
+
+model Subgrupo {
+  id      String @id @default(cuid())
+  grupoId String
+  grupo   Grupo  @relation(fields: [grupoId], references: [id])
+  nombre  String // A, B
+
+  moviles    Movil[]
+  rotaciones RotacionDiaria[]
+
+  @@unique([grupoId, nombre])
+}
+
+// ---------- Móviles (internos) ----------
+
+model Movil {
+  id              String    @id @default(cuid())
+  empresaId       String
+  empresa         Empresa   @relation(fields: [empresaId], references: [id])
+  numeroInterno   String
+  placa           String?
+  capacidad       Int?
+  subgrupoId      String?
+  subgrupo        Subgrupo? @relation(fields: [subgrupoId], references: [id])
+  socioId         String? // dueño del interno
+  socio           Persona?  @relation("SocioMovil", fields: [socioId], references: [id])
+  choferTitularId String? // quién lo maneja habitualmente (puede ser el propio socio u otra persona contratada)
+  choferTitular   Persona?  @relation("ChoferTitularMovil", fields: [choferTitularId], references: [id])
+
+  choferHistorial MovilChoferHistorial[]
+  reemplazos      ReemplazoDiario[]
+  programacion    ProgramacionDiaria[]
+  encomiendas     Encomienda[]
+
+  @@unique([empresaId, numeroInterno])
+}
+
+// Cambios DEFINITIVOS de chofer titular de un interno, con motivo y quién lo autorizó.
+model MovilChoferHistorial {
+  id              String    @id @default(cuid())
+  movilId         String
+  movil           Movil     @relation(fields: [movilId], references: [id])
+  choferId        String
+  chofer          Persona   @relation("ChoferHistorial", fields: [choferId], references: [id])
+  fechaInicio     DateTime  @db.Date
+  fechaFin        DateTime? @db.Date // null = titular actual desde fechaInicio
+  motivo          String?
+  autorizadoPorId String?
+  autorizadoPor   Persona?  @relation("AutorizadoPor", fields: [autorizadoPorId], references: [id])
+  createdAt       DateTime  @default(now())
+
+  @@index([movilId])
+}
+
+// Reemplazo PUNTUAL para una fecha específica (el titular no cambia).
+model ReemplazoDiario {
+  id        String   @id @default(cuid())
+  movilId   String
+  movil     Movil    @relation(fields: [movilId], references: [id])
+  fecha     DateTime @db.Date
+  choferId  String
+  chofer    Persona  @relation("ChoferReemplazo", fields: [choferId], references: [id])
+  motivo    String?
+  createdAt DateTime @default(now())
+
+  @@unique([movilId, fecha])
+}
+
+// ---------- Paradas ----------
+
+model Parada {
+  id           String   @id @default(cuid())
+  empresaId    String
+  empresa      Empresa  @relation(fields: [empresaId], references: [id])
+  nombre       String
+  ubicacion    String // ej. "Ciudad" o "Provincia"
+  secretariaId String?  @unique
+  secretaria   Persona? @relation("SecretariaParada", fields: [secretariaId], references: [id])
+
+  rotaciones        RotacionDiaria[]
+  programacion      ProgramacionDiaria[]
+  encomiendasOrigen Encomienda[]         @relation("ParadaOrigen")
+
+  @@index([empresaId])
+}
+
+// A qué parada va cada SUBGRUPO cada día (A y B pueden ir a paradas distintas).
+model RotacionDiaria {
+  id         String   @id @default(cuid())
+  subgrupoId String
+  subgrupo   Subgrupo @relation(fields: [subgrupoId], references: [id])
+  fecha      DateTime @db.Date
+  paradaId   String
+  parada     Parada   @relation(fields: [paradaId], references: [id])
+
+  @@unique([subgrupoId, fecha])
+}
+
+// Una fila por interno por día: el historial real, inmutable, de "dónde estaba
+// cada interno, con qué chofer, en qué grupo/subgrupo y bajo qué jefe".
+model ProgramacionDiaria {
+  id         String   @id @default(cuid())
+  fecha      DateTime @db.Date
+  movilId    String
+  movil      Movil    @relation(fields: [movilId], references: [id])
+  subgrupoId String?
+  grupoId    String?
+  grupo      Grupo?   @relation(fields: [grupoId], references: [id])
+  jefeId     String?
+  jefe       Persona? @relation("ProgramacionJefe", fields: [jefeId], references: [id])
+  choferId   String?
+  chofer     Persona? @relation("ProgramacionChofer", fields: [choferId], references: [id])
+  paradaId   String?
+  parada     Parada?  @relation(fields: [paradaId], references: [id])
+  createdAt  DateTime @default(now())
+
+  asistencia Asistencia?
+
+  @@unique([movilId, fecha])
+}
+
+// ---------- Asistencia y penalizaciones ----------
+
+enum MetodoAsistencia {
+  GPS
+  QR
+  MANUAL
+}
+
+enum EstadoAsistencia {
+  A_TIEMPO
+  TARDANZA
+  AUSENTE
+}
+
+model TipoInfraccion {
+  id        String  @id @default(cuid())
+  empresaId String
+  empresa   Empresa @relation(fields: [empresaId], references: [id])
+  nombre    String // "Tardanza", "Ausencia"
+  montoFijo Decimal @db.Decimal(10, 2)
+
+  asistencias Asistencia[]
+
+  @@unique([empresaId, nombre])
+}
+
+model Asistencia {
+  id                   String             @id @default(cuid())
+  programacionDiariaId String             @unique
+  programacionDiaria   ProgramacionDiaria @relation(fields: [programacionDiariaId], references: [id])
+  personaId            String
+  persona              Persona            @relation(fields: [personaId], references: [id])
+  horaLlegada          DateTime?
+  metodo               MetodoAsistencia?
+  estado               EstadoAsistencia
+  tipoInfraccionId     String?
+  tipoInfraccion       TipoInfraccion?    @relation(fields: [tipoInfraccionId], references: [id])
+  createdAt            DateTime           @default(now())
+
+  @@index([personaId])
+}
+
+// ---------- Permisos ----------
+
+enum EstadoPermiso {
+  PENDIENTE
+  APROBADO
+  RECHAZADO
+}
+
+model Permiso {
+  id            String        @id @default(cuid())
+  personaId     String
+  persona       Persona       @relation("PermisoSolicitante", fields: [personaId], references: [id])
+  tipo          String
+  fechaInicio   DateTime      @db.Date
+  fechaFin      DateTime      @db.Date
+  estado        EstadoPermiso @default(PENDIENTE)
+  aprobadoPorId String?
+  aprobadoPor   Persona?      @relation("PermisoAprobadoPor", fields: [aprobadoPorId], references: [id])
+  createdAt     DateTime      @default(now())
+
+  @@index([personaId])
+}
+
+// ---------- Encomiendas ----------
+
+enum TipoEntregaEncomienda {
+  PARADA
+  DOMICILIO
+}
+
+enum EstadoEncomienda {
+  RECIBIDA
+  EN_TRANSITO
+  ENTREGADA
+}
+
+model Encomienda {
+  id                  String                @id @default(cuid())
+  empresaId           String
+  empresa             Empresa               @relation(fields: [empresaId], references: [id])
+  remitenteNombre     String
+  remitenteCelular    String?
+  destinatarioNombre  String
+  destinatarioCelular String?
+  contenido           String?
+  paradaOrigenId      String
+  paradaOrigen        Parada                @relation("ParadaOrigen", fields: [paradaOrigenId], references: [id])
+  tipoEntrega         TipoEntregaEncomienda
+  direccionDestino    String?
+  movilId             String?
+  movil               Movil?                @relation(fields: [movilId], references: [id])
+  flete               Decimal               @db.Decimal(10, 2)
+  estado              EstadoEncomienda      @default(RECIBIDA)
+  fechaRecepcion      DateTime              @default(now())
+  fechaEntrega        DateTime?
+  entregadoA          String?
+
+  @@index([empresaId])
+}
