@@ -116,8 +116,8 @@ export async function POST(req: NextRequest) {
   const hojaPersonas = workbook.Sheets["Personas"];
   if (hojaPersonas) {
     const filas: any[] = XLSX.utils.sheet_to_json(hojaPersonas, { defval: "" });
-    for (const [i, fila] of filas.entries()) {
-      const nombre = texto(fila, "Nombre");
+    filas.for (let i = 0; i < filas.length; i++) {
+    const fila = filas[i];s
       if (!nombre) continue;
       try {
         await prisma.persona.create({
@@ -136,7 +136,7 @@ export async function POST(req: NextRequest) {
       } catch (e: any) {
         resumen.personas.errores.push(`Fila ${i + 2} (${nombre}): ${mensajeError(e)}`);
       }
-    }
+    });).
   }
 
   // ---------- Grupos (cada uno crea sus subgrupos A y B automáticamente) ----------
