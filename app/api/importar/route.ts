@@ -117,14 +117,17 @@ export async function POST(req: NextRequest) {
 if (hojaPersonas) {
     const filas: any[] = XLSX.utils.sheet_to_json(hojaPersonas, { defval: "" });
         // Bucle clásico limpio y compatible con TypeScript
-    for (let i = 0; i < filas.length; i++) {
-        const fila = filas[i];
-        if (!fila.nombre) continue;
+for (let i = 0; i < filas.length; i++) {
+    const fila = filas[i];
+        // 1. Extrae el nombre desde la fila del Excel (asegúrate de que coincida con la columna de tu Excel, ej: "Nombre")
+    const nombre = texto(fila, "Nombre") || fila.nombre; 
+    // 2. Valida que el nombre exista para continuar
+    if (!nombre) continue;
       try {
         await prisma.persona.create({
           data: {
             empresaId,
-            nombre,
+            nombre, // <-- Ahora TypeScript sí encuentra la variable 'nombre' definida en el scope
             carnet: texto(fila, "Carnet") || null,
             celular: texto(fila, "Celular") || null,
             email: texto(fila, "Correo") || null,
