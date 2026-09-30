@@ -114,11 +114,13 @@ export async function POST(req: NextRequest) {
 
   // ---------- Personas (van primero: grupos, móviles y paradas las referencian) ----------
   const hojaPersonas = workbook.Sheets["Personas"];
-  if (hojaPersonas) {
+if (hojaPersonas) {
     const filas: any[] = XLSX.utils.sheet_to_json(hojaPersonas, { defval: "" });
-    filas.for (let i = 0; i < filas.length; i++) {
-    const fila = filas[i];s
-      if (!nombre) continue;
+    
+    // Bucle clásico limpio y compatible con TypeScript
+    for (let i = 0; i < filas.length; i++) {
+        const fila = filas[i];
+        if (!fila.nombre) continue;
       try {
         await prisma.persona.create({
           data: {
