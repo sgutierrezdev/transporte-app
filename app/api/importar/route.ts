@@ -116,8 +116,7 @@ export async function POST(req: NextRequest) {
   const hojaPersonas = workbook.Sheets["Personas"];
 if (hojaPersonas) {
     const filas: any[] = XLSX.utils.sheet_to_json(hojaPersonas, { defval: "" });
-    
-    // Bucle clásico limpio y compatible con TypeScript
+        // Bucle clásico limpio y compatible con TypeScript
     for (let i = 0; i < filas.length; i++) {
         const fila = filas[i];
         if (!fila.nombre) continue;
