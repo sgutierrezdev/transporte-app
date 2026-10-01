@@ -52,11 +52,13 @@ export async function POST(request: Request) {
         try {
           await prisma.persona.create({
             data: {
-              empresaId,
               nombre,
               carnet: texto(fila, "Carnet") || null,
               celular: texto(fila, "Celular") || null,
               email: texto(fila, "Correo") || texto(fila, "Email") || null,
+              empresa: {
+                connect: { id: empresaId }
+              }
             }
           });
           resumen.personas.creados++;
@@ -80,11 +82,13 @@ export async function POST(request: Request) {
         try {
           await prisma.grupo.create({
             data: {
-              empresaId,
               nombre,
+              empresa: {
+                connect: { id: empresaId }
+              }
             }
           });
-          resumen.grupos.creados++;
+          resumen.groups.creados++;
         } catch (e: any) {
           resumen.grupos.errores.push(`Fila ${i + 2} (${nombre}): ${mensajeError(e)}`);
         }
