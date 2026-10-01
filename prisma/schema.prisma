@@ -24,6 +24,7 @@ model Empresa {
   ingresos        Ingreso[]
   tiposGasto      TipoGasto[]
   gastos          Gasto[]
+  socios          Socio[]
 }
 
 // ---------- Personas (admin, jefes, secretarias, socios, choferes) ----------
@@ -56,21 +57,22 @@ model Persona {
   fechaIngreso DateTime?
   createdAt    DateTime      @default(now())
 
-  paradaComoSecretaria Parada?                @relation("SecretariaParada")
-  movilesComoSocio     Movil[]                @relation("SocioMovil")
-  movilesComoTitular   Movil[]                @relation("ChoferTitularMovil")
-  jefaturas            JefeGrupoHistorial[]   @relation("JefeGrupo")
-  historialComoChofer  MovilChoferHistorial[] @relation("ChoferHistorial")
-  cambiosAutorizados   MovilChoferHistorial[] @relation("AutorizadoPor")
-  reemplazosComoChofer ReemplazoDiario[]      @relation("ChoferReemplazo")
-  permisos             Permiso[]              @relation("PermisoSolicitante")
-  permisosAprobados    Permiso[]              @relation("PermisoAprobadoPor")
-  asistencias          Asistencia[]
-  programacionesComoJefe   ProgramacionDiaria[] @relation("ProgramacionJefe")
-  programacionesComoChofer ProgramacionDiaria[] @relation("ProgramacionChofer")
+  paradaComoSecretaria     Parada?                @relation("SecretariaParada")
+  movilesComoSocio         Movil[]                @relation("SocioMovil")
+  movilesComoTitular       Movil[]                @relation("ChoferTitularMovil")
+  jefaturas                JefeGrupoHistorial[]   @relation("JefeGrupo")
+  historialComoChofer      MovilChoferHistorial[] @relation("ChoferHistorial")
+  cambiosAutorizados       MovilChoferHistorial[] @relation("AutorizadoPor")
+  reemplazosComoChofer     ReemplazoDiario[]      @relation("ChoferReemplazo")
+  permisos                 Permiso[]              @relation("PermisoSolicitante")
+  permisosAprobados        Permiso[]              @relation("PermisoAprobadoPor")
+  asistencias              Asistencia[]
+  programacionesComoJefe   ProgramacionDiaria[]   @relation("ProgramacionJefe")
+  programacionesComoChofer ProgramacionDiaria[]   @relation("ProgramacionChofer")
   gastosRegistrados        Gasto[]
   ingresosRegistrados      Ingreso[]              @relation("IngresoRegistradoPor")
   ingresosPagados          Ingreso[]              @relation("IngresoPagador")
+  socio                    Socio?
 
   @@index([empresaId])
 }
@@ -382,33 +384,34 @@ model TipoGasto {
 }
 
 model Gasto {
-  id             String    @id @default(cuid())
-  empresaId      String
-  empresa        Empresa   @relation(fields: [empresaId], references: [id])
-  paradaId       String
-  parada         Parada    @relation(fields: [paradaId], references: [id])
-  tipoGastoId    String
-  tipoGasto      TipoGasto @relation(fields: [tipoGastoId], references: [id])
-  descripcion    String?
-  monto          Decimal   @db.Decimal(10, 2)
-  fecha          DateTime  @db.Date
+  id              String    @id @default(cuid())
+  empresaId       String
+  empresa         Empresa   @relation(fields: [empresaId], references: [id])
+  paradaId        String
+  parada          Parada    @relation(fields: [paradaId], references: [id])
+  tipoGastoId     String
+  tipoGasto       TipoGasto @relation(fields: [tipoGastoId], references: [id])
+  descripcion     String?
+  monto           Decimal   @db.Decimal(10, 2)
+  fecha           DateTime  @db.Date
   registradoPorId String?
-  registradoPor  Persona?  @relation(fields: [registradoPorId], references: [id])
-  createdAt      DateTime  @default(now())
+  registradoPor   Persona?  @relation(fields: [registradoPorId], references: [id])
+  createdAt       DateTime  @default(now())
 
   @@index([paradaId])
   @@index([empresaId])
 }
+
 model Socio {
   id        String   @id @default(cuid())
   empresaId String
   personaId String   @unique
-  codigo    String?  // Código de socio dentro de la asociación
+  codigo    String? // Código de socio dentro de la asociación
   estado    String   @default("ACTIVO") // ACTIVO, INACTIVO, SUSPENDIDO
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   // Relaciones explícitas
-  empresa   Empresa  @relation(fields: [empresaId], references: [id], onDelete: Cascade)
-  persona   Persona  @relation(fields: [personaId], references: [id], onDelete: Cascade)
+  empresa Empresa @relation(fields: [empresaId], references: [id], onDelete: Cascade)
+  persona Persona @relation(fields: [personaId], references: [id], onDelete: Cascade)
 }
