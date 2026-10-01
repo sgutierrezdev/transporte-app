@@ -15,7 +15,7 @@ export function TablaRotacionesCompacta({ datos }: { datos: any[] }) {
         <tbody style={{ color: "var(--texto-principal, #334155)" }}>
           {datos.length === 0 ? (
             <tr>
-              <td colSpan={4} style={{ padding: 20, textCenter: "center", textAlign: "center", color: "#94a3b8", fontStyle: "italic" }}>
+              <td colSpan={4} style={{ padding: 20, textAlign: "center", color: "#94a3b8", fontStyle: "italic" }}>
                 No hay rotaciones registradas para el filtro seleccionado.
               </td>
             </tr>
