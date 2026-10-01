@@ -23,6 +23,7 @@ const GRUPOS: { titulo: string | null; enlaces: { href: string; label: string }[
       { href: "/dashboard/programacion", label: "Programación diaria" },
       { href: "/dashboard/asistencia", label: "Asistencia diaria" },
       { href: "/dashboard/caja", label: "Caja por parada" },
+      { href: "/dashboard/infracciones", label: "Infracciones y Sanciones" }, // <-- INTEGRADOR MAESTRO AQUÍ
     ],
   },
   {
