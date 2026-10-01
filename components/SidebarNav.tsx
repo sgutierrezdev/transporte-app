@@ -41,8 +41,19 @@ export default function SidebarNav() {
 
   return (
     <>
-      <div className="dash-mobile-bar">
-        <button onClick={() => setAbierto(true)} aria-label="Abrir menú" className="dash-hamburger">
+      <div className="dash-mobile-bar" style={{
+        position: "sticky",
+        top: 0,
+        zIndex: 40,
+        width: "100%",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        padding: "10px 16px",
+        background: "#1e2761", // Tu color azul actual
+        color: "#fff"
+      }}>
+          <button onClick={() => setAbierto(true)} aria-label="Abrir menú" className="dash-hamburger">
           ☰
         </button>
         <strong style={{ fontSize: 14 }}>Sistema de transporte</strong>

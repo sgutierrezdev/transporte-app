@@ -17,15 +17,15 @@ export default async function PersonasPage() {
 
   // Pasamos los diccionarios de traducción nativos y la acción del servidor
   return (
-    <main style={{ maxWidth: 1000, margin: "0 auto", padding: "1.5rem 1rem" }}>
-      <ComponentePersonasCliente 
-        personasIniciales={personas}
-        rolesConst={ROLES}
-        estadosConst={ESTADOS_PERSONA}
-        nombreRol={NOMBRE_ROL}
-        nombreEstado={NOMBRE_ESTADO}
-        crearPersonaAction={crearPersona}
-      />
+    <main style={{ 
+      width: "100%", 
+      maxWidth: 1000, 
+      margin: "0 auto", 
+      padding: "1rem", 
+      boxSizing: "border-box",
+      overflow: "hidden" // <-- Evita que el buscador o título estiren toda la pantalla del móvil
+    }}>
+      <ComponentePersonasCliente ... />
     </main>
   );
 }

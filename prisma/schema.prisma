@@ -252,6 +252,10 @@ model TipoInfraccion {
   empresa   Empresa @relation(fields: [empresaId], references: [id])
   nombre    String // "Tardanza", "Ausencia"
   montoFijo Decimal @db.Decimal(10, 2)
+  // NÚCLEO DE LA MEJORA: Campos para rangos de fechas configurables
+  montoEspecial Decimal?  @db.Decimal(10, 2) // Monto alternativo
+  fechaInicio   DateTime? @db.Date           // Cuándo empieza la tarifa especial
+  fechaFin      DateTime? @db.Date           // Cuándo termina la tarifa especial
 
   asistencias Asistencia[]
 

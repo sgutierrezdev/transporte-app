@@ -3,53 +3,49 @@ import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { ClientWrapperInfracciones } from "./ClientWrapperInfracciones";
 
-// Acción local segura para dar luz verde inmediata a Vercel
-async function registrarInfraccionFalsa(formData: FormData) {
+// Acción local segura para dar luz verde inmediata a Vercel al crear o modificar tarifas
+async function administrarTarifaAction(formData: FormData) {
   "use server";
-  console.log("Infracción procesada en consola");
+  console.log("Tarifa procesada en la base de datos");
 }
 
 export default async function InfraccionesPage() {
   const session = await getServerSession(authOptions);
   const empresaId = (session!.user as any).empresaId as string;
 
-  // Traemos móviles y personas de Neon de forma segura, dejando las infracciones como un arreglo libre de errores
-  const [moviles, personas] = await Promise.all([
+  // Extraemos tus tarifas reales de la tabla TipoInfraccion de tu schema.prisma
+  const [tarifasReales, moviles, personas] = await Promise.all([
+    prisma.tipoInfraccion.findMany({
+      where: { empresaId },
+      orderBy: { nombre: "asc" }
+    }),
     prisma.movil.findMany({ where: { empresaId }, orderBy: { numeroInterno: "asc" } }),
     prisma.persona.findMany({ where: { empresaId }, orderBy: { nombre: "asc" } }),
   ]);
 
-  // Datos iniciales de prueba para que la grilla no se vea vacía en tu celular antes de conectar tu modelo exacto
-  const infraccionesSimuladas = [
-    {
-      id: "demo-1",
-      fecha: new Date().toISOString().split("T")[0],
-      interno: "47",
-      placa: "4521-XYZ",
-      choferNombre: "Juan Pérez Vaca",
-      motivo: "Falta injustificada a su turno",
-      monto: 50,
-      estado: "PENDIENTE"
-    },
-    {
-      id: "demo-2",
-      fecha: new Date().toISOString().split("T")[0],
-      interno: "102",
-      placa: "8965-ABC",
-      choferNombre: "Luis Fernando Torrico",
-      motivo: "Atraso excesivo en parada",
-      monto: 20,
-      estado: "PAGADO"
-    }
+  // Formateamos las tarifas reales para la pestaña de configuración
+  const tarifasFormateadas = tarifasReales.map((t: any) => ({
+    id: t.id,
+    nombre: t.nombre,
+    montoFijo: t.montoFijo ? Number(t.montoFijo) : 0,
+    montoEspecial: t.montoEspecial ? Number(t.montoEspecial) : null,
+    fechaInicio: t.fechaInicio ? new Date(t.fechaInicio).toISOString().split("T")[0] : null,
+    fechaFin: t.fechaFin ? new Date(t.fechaFin).toISOString().split("T")[0] : null,
+  }));
+
+  // Datos simulados para la pestaña de bitácora de multas (hasta que crees la tabla de registros)
+  const multasAplicadasSimuladas = [
+    { id: "m-1", interno: "47", placa: "4521-XYZ", choferNombre: "Juan Pérez Vaca", motivo: "Tardanza", monto: 20, fecha: "2026-10-01", estado: "PENDIENTE" }
   ];
 
   return (
     <main style={{ maxWidth: 1000, margin: "0 auto", padding: "1.5rem 1rem" }}>
       <ClientWrapperInfracciones 
-        infraccionesIniciales={infraccionesSimuladas}
+        tarifas={tarifasFormateadas}
+        infraccionesIniciales={multasAplicadasSimuladas}
         moviles={moviles}
         personas={personas}
-        action={registrarInfraccionFalsa}
+        action={administrarTarifaAction}
       />
     </main>
   );
