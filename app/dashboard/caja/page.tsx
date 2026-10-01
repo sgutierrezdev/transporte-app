@@ -2,13 +2,13 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { ClientWrapperCaja } from "./ClientWrapperCaja";
+import { crearIngresoCaja } from "@/lib/actions/caja";
 
 // Acción local segura para dar luz verde inmediata a Vercel al registrar movimientos
 async function registrarIngresoFalsa(formData: FormData) {
   "use server";
   console.log("Movimiento contable guardado de forma segura");
 }
-
 export default async function CajaPage() {
   const session = await getServerSession(authOptions);
   const empresaId = (session!.user as any).empresaId as string;
@@ -44,7 +44,7 @@ export default async function CajaPage() {
         ingresosIniciales={datosCajaFormateados}
         paradas={paradas}
         tiposIngreso={tiposIngreso}
-        action={registrarIngresoFalsa}
+        action={crearIngresoCaja}
       />
     </main>
   );
