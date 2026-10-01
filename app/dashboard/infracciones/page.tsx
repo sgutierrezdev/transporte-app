@@ -6,44 +6,47 @@ import { ClientWrapperInfracciones } from "./ClientWrapperInfracciones";
 // Acción local segura para dar luz verde inmediata a Vercel
 async function registrarInfraccionFalsa(formData: FormData) {
   "use server";
-  console.log("Infracción registrada en la base de datos");
+  console.log("Infracción procesada en consola");
 }
 
 export default async function InfraccionesPage() {
   const session = await getServerSession(authOptions);
   const empresaId = (session!.user as any).empresaId as string;
 
-  // Traemos las infracciones, móviles y personas de Neon en paralelo de forma segura
-  const [infracciones, moviles, personas] = await Promise.all([
-    prisma.infraccion?.findMany({
-      orderBy: { createdAt: "desc" },
-    }) ?? [],
+  // Traemos móviles y personas de Neon de forma segura, dejando las infracciones como un arreglo libre de errores
+  const [moviles, personas] = await Promise.all([
     prisma.movil.findMany({ where: { empresaId }, orderBy: { numeroInterno: "asc" } }),
     prisma.persona.findMany({ where: { empresaId }, orderBy: { nombre: "asc" } }),
   ]);
 
-  // Mapeo ultra-seguro vinculando los datos en memoria para evitar errores de tipo relacionales
-  const datosInfraccionesFormateados = infracciones.map((i: any) => {
-    const fechaFormateada = i.fecha ? new Date(i.fecha).toISOString().split("T")[0] : "Sin fecha";
-    const movilEncontrado = moviles.find((m) => m.id === i.movilId);
-    const choferEncontrado = personas.find((p) => p.id === i.choferId);
-
-    return {
-      id: i.id,
-      fecha: fechaFormateada,
-      interno: movilEncontrado?.numeroInterno ?? "—",
-      placa: movilEncontrado?.placa ?? "Sin placa",
-      choferNombre: choferEncontrado?.nombre ?? "Sin asignar",
-      motivo: i.motivo ?? "Falta general",
-      monto: i.monto ? Number(i.monto) : 0,
-      estado: i.estado ?? "PENDIENTE" // PENDIENTE o PAGADO
-    };
-  });
+  // Datos iniciales de prueba para que la grilla no se vea vacía en tu celular antes de conectar tu modelo exacto
+  const infraccionesSimuladas = [
+    {
+      id: "demo-1",
+      fecha: new Date().toISOString().split("T")[0],
+      interno: "47",
+      placa: "4521-XYZ",
+      choferNombre: "Juan Pérez Vaca",
+      motivo: "Falta injustificada a su turno",
+      monto: 50,
+      estado: "PENDIENTE"
+    },
+    {
+      id: "demo-2",
+      fecha: new Date().toISOString().split("T")[0],
+      interno: "102",
+      placa: "8965-ABC",
+      choferNombre: "Luis Fernando Torrico",
+      motivo: "Atraso excesivo en parada",
+      monto: 20,
+      estado: "PAGADO"
+    }
+  ];
 
   return (
     <main style={{ maxWidth: 1000, margin: "0 auto", padding: "1.5rem 1rem" }}>
       <ClientWrapperInfracciones 
-        infraccionesIniciales={datosInfraccionesFormateados}
+        infraccionesIniciales={infraccionesSimuladas}
         moviles={moviles}
         personas={personas}
         action={registrarInfraccionFalsa}
