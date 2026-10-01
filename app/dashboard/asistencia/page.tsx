@@ -1,20 +1,19 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { TablaAsistenciasCompacta } from "@/components/TablaAsistencias";
-import { ModalFormularioMaestro, CampoFormulario, estiloInputGlobal } from "@/components/ModalFormularioMaestro";
+import { ClientWrapper } from "./ClientWrapper";
 
 // Acción local segura para dar luz verde inmediata a Vercel
 async function registrarAsistenciaFalsa(formData: FormData) {
   "use server";
-  console.log("Fichaje procesado");
+  console.log("Fichaje de asistencia procesado en consola");
 }
 
 export default async function AsistenciaDiariaPage() {
   const session = await getServerSession(authOptions);
   const empresaId = (session!.user as any).empresaId as string;
 
-  // Traemos los registros operativos desde Neon.tech
+  // Traemos los registros operativos en paralelo desde Neon.tech
   const [asistencias, paradas, moviles] = await Promise.all([
     prisma.asistenciaDiaria.findMany({
       include: { parada: true, movil: true, chofer: true },
@@ -42,25 +41,12 @@ export default async function AsistenciaDiariaPage() {
 
   return (
     <main style={{ maxWidth: 1000, margin: "0 auto", padding: "1.5rem 1rem" }}>
-      <ContenedorAsistenciaCliente 
+      <ClientWrapper 
         asistenciasIniciales={datosAsistenciaFormateados}
         paradas={paradas}
         moviles={moviles}
+        action={registrarAsistenciaFalsa}
       />
     </main>
-  );
-}
-
-// --- COMPONENTE INTERACTIVO CLIENTE INLINE (Evita errores de módulo no encontrado) ---
-import { ClientWrapper } from "./ClientWrapper"; // Auxiliar sintáctico
-
-function ContenedorAsistenciaCliente({ asistenciasIniciales, paradas, moviles }: any) {
-  return (
-    <ClientWrapper 
-      asistenciasIniciales={asistenciasIniciales} 
-      paradas={paradas} 
-      moviles={moviles} 
-      action={registrarAsistenciaFalsa} 
-    />
   );
 }
