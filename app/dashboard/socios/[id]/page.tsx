@@ -1,92 +1,53 @@
-import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { getServerSession } from "next-auth";
+import Link from "next/link";
 
-// Asumimos que Campo y estiloInput están definidos o importados. 
-// Si los tienes definidos localmente en tu archivo, mantén sus declaraciones.
-const estiloInput = {
-  width: "100%",
-  padding: "8px",
-  borderRadius: "4px",
-  border: "1px solid #ccc",
-  marginTop: "4px"
-};
-
-function Campo({ label, children }: { label: string; children: React.ReactNode }) {
-  return (
-    <div style={{ marginBottom: 16 }}>
-      <label style={{ fontWeight: "bold", display: "block" }}>{label}</label>
-      {children}
-    </div>
-  );
-}
-
-export default async function EditarSocioPage({ params }: { params: { id: string } }) {
+export default async function SociosPage() {
   const session = await getServerSession();
   const empresaId = (session!.user as any).empresaId as string;
 
-  // Consultamos el socio e incluimos la tabla persona de forma correcta
-  const socio = await prisma.socio.findFirst({ 
-    where: { id: params.id, empresaId },
-    include: { persona: true }
+  // Consulta corregida ordenando a través de la relación de persona
+  const socios = await prisma.socio.findMany({
+    where: { empresaId },
+    orderBy: {
+      persona: {
+        nombre: "asc"
+      }
+    },
+    include: {
+      persona: true
+    }
   });
 
-  if (!socio) notFound();
-
   return (
-    <div style={{ maxWidth: 600, margin: "0 auto", padding: 20 }}>
-      <h1 style={{ fontSize: 24, marginBottom: 20 }}>Editar socio</h1>
-
-      <form method="POST">
-        <Campo label="Nombre">
-          <input 
-            name="nombre" 
-            defaultValue={socio.persona?.nombre || ""} 
-            required 
-            style={estiloInput} 
-          />
-        </Campo>
-        
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
-          <Campo label="Carnet">
-            <input 
-              name="carnet" 
-              defaultValue={socio.persona?.carnet || ""} 
-              style={estiloInput} 
-            />
-          </Campo>
-          <Campo label="Celular">
-            <input 
-              name="celular" 
-              defaultValue={socio.persona?.celular || ""} 
-              style={estiloInput} 
-            />
-          </Campo>
-        </div>
-
-        <Campo label="Código de Socio">
-          <input 
-            name="codigo" 
-            defaultValue={socio.codigo || ""} 
-            style={estiloInput} 
-          />
-        </Campo>
-
-        <button 
-          type="submit" 
-          style={{ 
-            backgroundColor: "#0070f3", 
-            color: "white", 
-            padding: "10px 16px", 
-            border: "none", 
-            borderRadius: 4, 
-            cursor: "pointer",
-            marginTop: 10 
-          }}
-        >
-          Guardar Cambios
-        </button>
-      </form>
+    <div style={{ padding: 20 }}>
+      <h1 style={{ fontSize: 24, marginBottom: 20 }}>Lista de Socios</h1>
+      <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+        {socios.map((socio) => (
+          <div 
+            key={socio.id} 
+            style={{ 
+              padding: 15, 
+              border: "1px solid #eee", 
+              borderRadius: 8, 
+              display: "flex", 
+              justifyContent: "between", 
+              alignItems: "center" 
+            }}
+          >
+            <div>
+              <p style={{ fontWeight: "bold", margin: 0 }}>{socio.persona?.nombre}</p>
+              <p style={{ size: 12, color: "#666", margin: 0 }}>Código: {socio.codigo || "Sin código"}</p>
+            </div>
+            <Link 
+              href={`/dashboard/socios/${socio.id}`}
+              style={{ color: "#0070f3", textDecoration: "none", fontWeight: "bold" }}
+            >
+              Editar
+            </Link>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
