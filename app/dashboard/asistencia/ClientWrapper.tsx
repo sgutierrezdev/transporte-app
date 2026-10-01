@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { TablaAsistenciasCompacta } from "@/components/TablaAsistencias";
+import { TablaAsistenciasCompacta } from "../../../components/TablaAsistencias";
 import { ModalFormularioMaestro, CampoFormulario, estiloInputGlobal } from "@/components/ModalFormularioMaestro";
 
 export function ClientWrapper({ asistenciasIniciales, paradas, moviles, action }: any) {
