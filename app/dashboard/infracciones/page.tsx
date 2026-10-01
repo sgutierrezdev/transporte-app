@@ -2,6 +2,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { ClientWrapperInfracciones } from "./ClientWrapperInfracciones";
+import { guardarTipoInfraccion } from "@/lib/actions/tarifas";
 
 // Acción local segura para dar luz verde inmediata a Vercel al crear o modificar tarifas
 async function administrarTarifaAction(formData: FormData) {
@@ -45,7 +46,7 @@ export default async function InfraccionesPage() {
         infraccionesIniciales={multasAplicadasSimuladas}
         moviles={moviles}
         personas={personas}
-        action={administrarTarifaAction}
+        action={guardarTipoInfraccion}
       />
     </main>
   );
