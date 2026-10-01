@@ -9,23 +9,31 @@ export default async function PersonasPage() {
   const session = await getServerSession(authOptions);
   const empresaId = (session!.user as any).empresaId as string;
 
-  // Extraemos las personas reales conectadas a tu base de datos en la nube
+  // Extraemos las personas reales conectadas a tu base de datos en la nube de Neon.tech
   const personas = await prisma.persona.findMany({
     where: { empresaId },
     orderBy: { nombre: "asc" },
   });
 
-  // Pasamos los diccionarios de traducción nativos y la acción del servidor
   return (
-    <main style={{ 
-      width: "100%", 
-      maxWidth: 1000, 
-      margin: "0 auto", 
-      padding: "1rem", 
-      boxSizing: "border-box",
-      overflow: "hidden" // <-- Evita que el buscador o título estiren toda la pantalla del móvil
-    }}>
-      <ComponentePersonasCliente ... />
+    <main 
+      style={{ 
+        width: "100%", 
+        maxWidth: 1000, 
+        margin: "0 auto", 
+        padding: "1rem", 
+        boxSizing: "border-box",
+        overflow: "hidden" 
+      }}
+    >
+      <ComponentePersonasCliente 
+        personasIniciales={personas}
+        rolesConst={ROLES}
+        estadosConst={ESTADOS_PERSONA}
+        nombreRol={NOMBRE_ROL}
+        nombreEstado={NOMBRE_ESTADO}
+        crearPersonaAction={crearPersona}
+      />
     </main>
   );
 }
