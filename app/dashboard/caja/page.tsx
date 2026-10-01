@@ -44,7 +44,7 @@ export default async function CajaPage() {
         ingresosIniciales={datosCajaFormateados}
         paradas={paradas}
         tiposIngreso={tiposIngreso}
-        action={registrarIngresoFalso}
+        action={registrarIngresoFalsa}
       />
     </main>
   );
