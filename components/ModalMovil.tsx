@@ -4,7 +4,7 @@ export function ModalMovilCompacto({ isOpen, onClose, subgrupos, personas, actio
   if (!isOpen) return null;
 
   return (
-    <div style={{ fixed: "fixed", position: "fixed", inset: 0, zIndex: 100, display: "flex", alignItems: "center", justifyCenter: "center", justifyContent: "center", background: "rgba(0,0,0,0.4)", padding: 16 }}>
+    <div style={{ position: "fixed", inset: 0, zIndex: 100, display: "flex", alignItems: "center", justifyContent: "center", background: "rgba(0,0,0,0.4)", padding: 16 }}>
       <div style={{ width: "100%", maxWidth: 460, background: "var(--bg-tarjeta, #fff)", border: "1px solid var(--border-color, #e2e8f0)", borderRadius: 12, padding: 16, boxShadow: "0 10px 25px -5px rgba(0,0,0,0.1)" }}>
         
         {/* Cabecera */}
