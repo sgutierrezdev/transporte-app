@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma"; 
+import { Rol } from "@prisma/client"; // <-- AÑADE ESTA LÍNEA (Si en tu schema está en mayúsculas, usa RROL o ROL)
 import * as XLSX from "xlsx";
+
 
 function texto(fila: any, columna: string): string {
   if (!fila || !columna || fila[columna] === undefined) return "";
@@ -56,14 +58,17 @@ export async function POST(request: Request) {
               carnet: texto(fila, "Carnet") || null,
               celular: texto(fila, "Celular") || null,
               email: texto(fila, "Correo") || texto(fila, "Email") || null,
+              rol: Rol.SOCIO, // <-- CAMBIA ESTO AQUÍ (Usa Rol.SOCIO o ROL.SOCIO según tu import)
               empresa: {
                 connect: { id: empresaId }
               }
             }
           });
           resumen.personas.creados++;
-        } catch (e: any) {
-          resumen.personas.errores.push(`Fila ${i + 2} (${nombre}): ${mensajeError(e)}`);
+            }
+          });
+          resumen.personas.creados++;
+
         }
       }
     }
