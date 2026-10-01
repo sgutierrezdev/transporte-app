@@ -9,7 +9,10 @@ export default async function EditarSocioPage({ params }: { params: { id: string
   const session = await getServerSession(authOptions);
   const empresaId = (session!.user as any).empresaId as string;
 
-  const socio = await prisma.socio.findFirst({ where: { id: params.id, empresaId } });
+  const socio = await prisma.socio.findFirst({ 
+  where: { id: params.id, empresaId },
+  include: { persona: true } // <-- Esto trae el nombre, carnet, celular, etc.
+  });
   if (!socio) notFound();
 
   const actualizar = actualizarSocio.bind(null, socio.id);
@@ -33,14 +36,14 @@ export default async function EditarSocioPage({ params }: { params: { id: string
         }}
       >
         <Campo label="Nombre">
-          <input name="nombre" defaultValue={socio.nombre} required style={estiloInput} />
+          <input name="nombre" defaultValue={socio.persona?.nombre || ""} required style={estiloInput} />
         </Campo>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
           <Campo label="Carnet">
-            <input name="carnet" defaultValue={socio.carnet ?? ""} style={estiloInput} />
+            <input name="carnet" defaultValue={socio.persona?.carnet ""} style={estiloInput} />
           </Campo>
           <Campo label="Celular">
-            <input name="celular" defaultValue={socio.celular ?? ""} style={estiloInput} />
+            <input name="celular" defaultValue={socio.persona?.celular ?? ""} style={estiloInput} />
           </Campo>
         </div>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
