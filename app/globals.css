@@ -1,149 +1,130 @@
-* {
+/* ==========================================================================
+   AdminLTE Layout Core para Next.js (Responsivo y Tema Dual Nativo)
+   ========================================================================== */
+
+html, body {
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background-color: var(--bg-pagina, #f4f6f9);
+  color: var(--texto-principal, #333);
+  overflow-x: hidden; /* Bloquea el estiramiento de toda la pantalla en celulares */
+}
+
+/* Contenedor de la barra superior en móviles (AdminLTE Header) */
+.dash-mobile-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 50px;
+  background-color: #1e2761;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  z-index: 1030;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
   box-sizing: border-box;
 }
 
-body {
-  margin: 0;
-  font-family: -apple-system, "Segoe UI", Arial, sans-serif;
-  background: #f4f6fb;
-  color: #1e2761;
-}
-
-input,
-button {
-  font-family: inherit;
-  font-size: 14px;
-}
-
-/* ---------- Panel lateral (dashboard) ---------- */
-
-.dash-shell {
-  display: flex;
-  min-height: 100vh;
-}
-
-.dash-sidebar {
-  width: 220px;
-  flex-shrink: 0;
-  background: #1e2761;
+.dash-hamburger {
+  background: none;
+  border: none;
   color: #fff;
-  padding: 20px 14px;
-  position: sticky;
-  top: 0;
-  align-self: flex-start;
-  height: 100vh;
-  overflow-y: auto;
-  z-index: 50;
+  font-size: 24px;
+  cursor: pointer;
+  margin-right: 12px;
+  padding: 0;
 }
 
+/* Capa oscura de fondo (AdminLTE Backdrop) */
+.dash-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1035;
+}
+
+/* Barra Lateral (AdminLTE Sidebar) */
+.dash-sidebar {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 250px;
+  background-color: #1e2761;
+  color: #fff;
+  padding: 20px 16px;
+  z-index: 1040;
+  box-sizing: border-box;
+  overflow-y: auto;
+  transition: transform 0.3s ease-in-out;
+  transform: translateX(-100%); /* Oculto por defecto en celulares */
+}
+
+.dash-sidebar.open {
+  transform: translateX(0); /* Se desliza elegantemente al abrir */
+}
+
+/* Enlaces de Navegación (AdminLTE Nav Items) */
 .dash-nav-titulo {
   font-size: 11px;
-  color: #cadcfc;
-  opacity: 0.85;
-  margin: 18px 8px 6px;
-  letter-spacing: 0.03em;
   text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #8aaeff;
+  margin: 16px 0 8px 0;
+  font-weight: 700;
 }
 
 .dash-nav-item {
   display: block;
-  padding: 9px 10px;
-  border-radius: 8px;
-  font-size: 13px;
-  color: #fff;
-  opacity: 0.85;
+  padding: 8px 12px;
+  border-radius: 4px;
+  color: #cadcfc;
   text-decoration: none;
+  font-size: 13px;
+  font-weight: 500;
+  margin-bottom: 4px;
+  transition: background 0.15s ease;
 }
 
 .dash-nav-item:hover {
-  background: rgba(255, 255, 255, 0.08);
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #fff;
 }
 
 .dash-nav-item.active {
-  background: rgba(255, 255, 255, 0.16);
-  opacity: 1;
-  font-weight: 500;
+  background-color: #0070f3;
+  color: #fff;
+  font-weight: 600;
 }
 
-.dash-main {
-  flex: 1;
-  min-width: 0;
+/* Contenedor del Contenido Blanco Principal (AdminLTE Content Wrapper) */
+.admin-content-wrapper {
+  width: 100%;
+  max-width: 100%;
+  padding: 70px 16px 20px 16px; /* Deja espacio para la cabecera fija de 50px */
+  box-sizing: border-box;
+  overflow: hidden; /* Clave: Impide que los buscadores ensanchen la aplicación */
 }
 
-.dash-mobile-bar {
-  display: none;
-}
-
-.dash-hamburger,
-.dash-cerrar-movil {
-  background: transparent;
-  border: none;
-  font-size: 18px;
-  cursor: pointer;
-  color: inherit;
-  padding: 4px;
-}
-
-.dash-cerrar-movil {
-  display: none;
-}
-
-.dash-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.4);
-  z-index: 40;
-  display: none;
-}
-
-@media (max-width: 860px) {
-  .dash-sidebar {
-    position: fixed;
-    left: 0;
-    top: 0;
-    transform: translateX(-100%);
-    transition: transform 0.2s ease;
-    width: 240px;
-  }
-
-  .dash-sidebar.open {
-    transform: translateX(0);
-  }
-
-  .dash-cerrar-movil {
-    display: block;
-    color: #fff;
-  }
-
+/* ==========================================================================
+   REGLAS PARA ESCRITORIO (Reglas de rejilla automatizadas de AdminLTE)
+   ========================================================================== */
+@media (min-width: 992px) {
   .dash-mobile-bar {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 12px 16px;
-    background: #fff;
-    border-bottom: 0.5px solid #d9deee;
-    color: #1e2761;
-    position: sticky;
-    top: 0;
-    z-index: 30;
+    display: none !important; /* Esconde la cabecera móvil en computadoras */
   }
 
-  .dash-overlay {
-    display: block;
+  .dash-sidebar {
+    transform: translateX(0) !important; /* Siempre fijo y visible a la izquierda */
+    box-shadow: 2px 0 5px rgba(0,0,0,0.05);
   }
-}
 
-/* Impresión: solo el contenido (comprobantes, reportes), sin menú ni botones */
-@media print {
-  .dash-sidebar,
-  .dash-mobile-bar,
-  .no-imprimir {
-    display: none !important;
-  }
-  .dash-main {
-    margin-left: 0 !important;
-  }
-  body {
-    background: #fff !important;
+  .admin-content-wrapper {
+    padding: 24px 30px;
+    margin-left: 250px; /* Desplaza el contenido blanco exactamente el ancho del menú */
+    width: calc(100% - 250px);
   }
 }
