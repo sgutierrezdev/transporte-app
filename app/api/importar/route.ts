@@ -169,7 +169,7 @@ for (let i = 0; i < filas.length; i++) {
         if (jefeId) {
           await prisma.jefeGrupoHistorial.create({
             data: { grupoId: grupo.id, jefeId, fechaInicio: new Date(), fechaFin: null },
-          });
+          };
         }
         resumen.grupos.creados++;
       } catch (e: any) {

@@ -399,3 +399,16 @@ model Gasto {
   @@index([paradaId])
   @@index([empresaId])
 }
+model Socio {
+  id        String   @id @default(cuid())
+  empresaId String
+  personaId String   @unique
+  codigo    String?  // Código de socio dentro de la asociación
+  estado    String   @default("ACTIVO") // ACTIVO, INACTIVO, SUSPENDIDO
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relaciones explícitas
+  empresa   Empresa  @relation(fields: [empresaId], references: [id], onDelete: Cascade)
+  persona   Persona  @relation(fields: [personaId], references: [id], onDelete: Cascade)
+}
