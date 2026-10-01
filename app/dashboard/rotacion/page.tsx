@@ -15,14 +15,20 @@ export default async function RotacionDiariaPage() {
 
   // Ejecutamos tu consulta relacional original optimizada para Neon.tech
   const [rotaciones, paradas, subgrupos] = await Promise.all([
+    // Reemplaza tu actual prisma.rotacionDiaria.findMany por este bloque:
     prisma.rotacionDiaria.findMany({
-      where: { empresaId },
+      where: { 
+        parada: {
+          empresaId: empresaId // Filtra de forma correcta usando la relación de la Parada
+        }
+      },
       include: {
         parada: true,
         subgrupo: { include: { grupo: true } },
       },
       orderBy: { fecha: "desc" },
     }),
+
     prisma.parada.findMany({ where: { empresaId }, orderBy: { nombre: "asc" } }),
     prisma.subgrupo.findMany({
       where: { grupo: { empresaId } },
