@@ -23,7 +23,7 @@ export function TablaAsistenciasCompacta({ datos }: { datos: any[] }) {
           ) : (
             datos.map((a) => (
               <tr key={a.id} className="group-row" style={{ borderBottom: "1px solid var(--border-color, #f1f5f9)" }}>
-                <td style={{ padding: "10px 12px", textAlign: "center", fontWith: "black", fontWeight: "bold", fontSize: 15 }}>
+                <td style={{ padding: "10px 12px", textAlign: "center", fontWeight: "bold", fontSize: 15 }}>
                   {a.interno}
                 </td>
                 <td style={{ padding: "10px 12px" }}>
