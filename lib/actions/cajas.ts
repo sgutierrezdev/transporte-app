@@ -20,10 +20,11 @@ export async function crearIngresoCaja(formData: FormData) {
   }
 
   try {
-    // Registro limpio alineado con tu schema.prisma real de Neon.tech
+    // Sincronización perfecta: añadimos la propiedad 'fecha' obligatoria
     await prisma.ingreso.create({
       data: {
         monto: parseFloat(montoStr),
+        fecha: new Date(), 
         empresa: { connect: { id: empresaId } },
         parada: { connect: { id: paradaId } },
         tipoIngreso: { connect: { id: tipoIngresoId } },
