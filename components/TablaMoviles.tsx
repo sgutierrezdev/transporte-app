@@ -1,64 +1,47 @@
 "use client";
-import { useState } from "react";
+import Link from "next/link";
 
-export function TablaMoviles({ datos }: { datos: any[] }) {
-  const [enfoque, setEnfoque] = useState<"socio" | "chofer">("socio");
-
+export function TablaMovilesCompacta({ datos, enfoque }: { datos: any[], enfoque: "socio" | "chofer" }) {
   return (
-    <div className="w-full">
-      {/* Selector de Pestañas Compacto */}
-      <div className="inline-flex rounded-lg p-0.5 bg-slate-200 dark:bg-slate-800 border mb-4">
-        <button 
-          onClick={() => setEnfoque("socio")}
-          className={`px-3 py-1 text-xs font-bold rounded-md ${enfoque === "socio" ? "bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow" : "text-slate-500"}`}
-        >
-          Ver Socios (Dueños)
-        </button>
-        <button 
-          onClick={() => setEnfoque("chofer")}
-          className={`px-3 py-1 text-xs font-bold rounded-md ${enfoque === "chofer" ? "bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow" : "text-slate-500"}`}
-        >
-          Ver Choferes
-        </button>
-      </div>
-
-      {/* Estructura Densa Neutra */}
-      <div className="overflow-x-auto rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
-        <table className="w-full text-left text-sm">
-          <thead>
-            <tr className="bg-slate-50 dark:bg-slate-800 text-slate-500 text-xs font-bold uppercase border-b dark:border-slate-800">
-              <th className="p-3 text-center w-16">Int.</th>
-              <th className="p-3 w-24">Placa</th>
-              <th className="p-3">Personal de la Unidad</th>
-              <th className="p-3 text-right pr-6 w-20">Acciones</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
-            {datos.map((m) => (
-              <tr key={m.id} className="group hover:bg-slate-50/50 dark:hover:bg-slate-800/20 relative">
-                <td className="p-3 text-center font-black">{m.interno}</td>
-                <td className="p-3 font-mono text-xs text-slate-400">{m.placa}</td>
-                <td className="p-3">
-                  <div className="flex flex-col">
-                    <span className="font-semibold">{enfoque === "socio" ? m.socioNombre : m.choferNombre}</span>
-                    {m.socioNombre !== m.choferNombre && (
-                      <span className="text-xs text-slate-400 mt-0.5">
+    <div style={{ overflowX: "auto", borderRadius: 10, border: "1px solid var(--border-color, #e2e8f0)", background: "var(--bg-tarjeta, #fff)" }}>
+      <table style={{ width: "100%", borderCollapse: "collapse", textAlign: "left", fontSize: 13 }}>
+        <thead>
+          <tr style={{ background: "var(--bg-cabecera, #f8fafc)", borderBottom: "1px solid var(--border-color, #e2e8f0)", color: "#64748b", fontSize: 11, textTransform: "uppercase", fontWeight: 700 }}>
+            <th style={{ padding: "8px 12px", textAlign: "center", width: 60 }}>Int.</th>
+            <th style={{ padding: "8px 12px", width: 100 }}>Placa</th>
+            <th style={{ padding: "8px 12px" }}>{enfoque === "socio" ? "Socio / Propietario" : "Chofer Asignado"}</th>
+            <th style={{ padding: "8px 12px", textAlign: "right", paddingRight: 20, width: 80 }}>Acciones</th>
+          </tr>
+        </thead>
+        <tbody style={{ color: "var(--texto-principal, #334155)" }}>
+          {datos.map((m) => {
+            const esMismo = m.socioNombre === m.choferNombre;
+            return (
+              <tr key={m.id} className="group-row" style={{ borderBottom: "1px solid var(--border-color, #f1f5f9)" }}>
+                <td style={{ padding: "8px 12px", textAlign: "center", fontWeight: "bold" }}>{m.interno}</td>
+                <td style={{ padding: "8px 12px", fontFamily: "monospace", fontSize: 12, color: "#94a3b8" }}>{m.placa}</td>
+                <td style={{ padding: "8px 12px" }}>
+                  <div style={{ display: "flex", flexDirection: "column" }}>
+                    <span style={{ fontWeight: 600 }}>{enfoque === "socio" ? m.socioNombre : m.choferNombre}</span>
+                    {!esMismo && (
+                      <span style={{ fontSize: 11, color: "#94a3b8", marginTop: 2 }}>
                         {enfoque === "socio" ? `Chofer: ${m.choferNombre}` : `Dueño: ${m.socioNombre}`}
                       </span>
                     )}
+                    <span style={{ fontSize: 11, color: "#0070f3", marginTop: 2, fontWeight: 500 }}>{m.grupoTexto}</span>
                   </div>
                 </td>
-                <td className="p-3 text-right pr-6">
-                  <div className="opacity-0 group-hover:opacity-100 inline-flex gap-2 bg-white dark:bg-slate-900 shadow rounded px-1">
-                    <button className="text-slate-400 hover:text-slate-600 text-xs">✏️</button>
-                    <button className="text-slate-400 hover:text-red-500 text-xs">🗑️</button>
+                <td style={{ padding: "8px 12px", textAlign: "right", paddingRight: 20 }}>
+                  <div style={{ display: "inline-flex", gap: 10 }}>
+                    <Link href={`/dashboard/moviles/${m.id}`} style={{ textDecoration: "none", fontSize: 12 }}>✏️</Link>
+                    <button style={{ background: "none", border: "none", cursor: "pointer", fontSize: 12 }}>🗑️</button>
                   </div>
                 </td>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+            );
+          })}
+        </tbody>
+      </table>
     </div>
   );
 }
