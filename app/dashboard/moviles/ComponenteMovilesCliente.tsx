@@ -38,7 +38,7 @@ export function ComponenteMovilesCliente({ movilesIniciales, subgrupos, personas
         </div>
 
         {/* Buscador y Botón en la misma línea */}
-        <div style={{ display: "flex", itemsCenter: "center", gap: 8, flex: 1, maxWidth: 500, marginLeft: "auto" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 8, flex: 1, maxWidth: 500, marginLeft: "auto" }}>
           <input 
             type="text" 
             placeholder="Buscar por interno, placa, socio..."
