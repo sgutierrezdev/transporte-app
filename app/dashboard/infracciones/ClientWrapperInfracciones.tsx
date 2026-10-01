@@ -72,7 +72,7 @@ export function ClientWrapperInfracciones({ tarifas, infraccionesIniciales, movi
               {tarifas.map((t: any) => (
                 <tr key={t.id} style={{ borderBottom: "1px solid var(--border-color, #f1f5f9)" }}>
                   <td style={{ padding: "12px 12px", fontWeight: 600, fontSize: 14 }}>{t.nombre}</td>
-                  <td style={{ padding: "12px 12px", fontWith: "bold", fontWeight: "bold" }}>Bs. {t.montoFijo}</td>
+                  <td style={{ padding: "12px 12px", fontWeight: "bold" }}>Bs. {t.montoFijo}</td>
                   <td style={{ padding: "12px 12px" }}>
                     {t.montoEspecial ? (
                       <div style={{ display: "flex", flexDirection: "column" }}><span style={{ color: "#b06000", fontWeight: 600 }}>Bs. {t.montoEspecial} (Especial)</span><span style={{ fontSize: 11, color: "#94a3b8" }}>Vence: {t.fechaFin}</span></div>
