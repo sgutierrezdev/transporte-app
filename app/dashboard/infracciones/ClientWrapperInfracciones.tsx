@@ -13,11 +13,10 @@ export function ClientWrapperInfracciones({ tarifas, infraccionesIniciales, movi
   );
 
   return (
-    <div style={{ width: "100%", overflow: "hidden", boxSizing: "border-box" }}>
+    <div style={{ width: "100%", maxWidth: "100%", overflow: "hidden", boxSizing: "border-box" }}>
       {/* CONTROL DE PESTAÑAS Y HERRAMIENTAS EN LA MISMA LÍNEA */}
       <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "center", gap: 12, marginBottom: 16 }}>
         
-        {/* Selector de Sección Operativa */}
         <div style={{ display: "inline-flex", background: "var(--bg-pestañas, #f1f3f9)", border: "1px solid var(--border-color, #e2e8f0)", padding: 3, borderRadius: 8 }}>
           <button type="button" onClick={() => setVistaActual("BITACORA")} style={{ padding: "6px 12px", fontSize: 12, fontWeight: 600, border: "none", borderRadius: 6, cursor: "pointer", background: vistaActual === "BITACORA" ? "var(--bg-tarjeta, #fff)" : "transparent", color: vistaActual === "BITACORA" ? "var(--texto-principal, #1e293b)" : "#64748b" }}>
             📋 Historial de Multas
@@ -27,7 +26,6 @@ export function ClientWrapperInfracciones({ tarifas, infraccionesIniciales, movi
           </button>
         </div>
 
-        {/* Acciones contextuales dinámicas según la pestaña activa */}
         <div style={{ display: "flex", alignItems: "center", gap: 8, marginLeft: "auto" }}>
           {vistaActual === "BITACORA" ? (
             <>
@@ -40,12 +38,12 @@ export function ClientWrapperInfracciones({ tarifas, infraccionesIniciales, movi
         </div>
       </div>
 
-      <p style={{ fontSize: 12, color: "#64748b", marginBottom: 8, fontFamily: "monospace" }}>{filtrados.length} registros operativos listados</p>
+      <p style={{ fontSize: 12, color: "#64748b", marginBottom: 8, fontFamily: "monospace" }}>{filtrados.length} registros listados</p>
 
-      {/* --- VISTA A: BITACORA DE MULTAS COMPACTA --- */}
+      {/* --- VISTA A: BITACORA DE MULTAS COMPACTA CON ARRASTRE HORIZONTAL RESPONSIVO --- */}
       {vistaActual === "BITACORA" && (
         <div style={{ width: "100%", overflowX: "auto", WebkitOverflowScrolling: "touch", borderRadius: 10, border: "1px solid var(--border-color, #e2e8f0)", background: "var(--bg-tarjeta, #fff)" }}>
-          <table style={{ width: "100%", minWidth: 700, borderCollapse: "collapse", textAlign: "left", fontSize: 13 }}>
+          <table style={{ width: "100%", minWidth: 650, borderCollapse: "collapse", textAlign: "left", fontSize: 13 }}>
             <thead>
               <tr style={{ background: "var(--bg-cabecera, #f8fafc)", borderBottom: "1px solid var(--border-color, #e2e8f0)", color: "#64748b", fontSize: 11, textTransform: "uppercase", fontWeight: 700 }}><th style={{ padding: "8px 12px", textAlign: "center", width: 60 }}>Int.</th><th style={{ padding: "8px 12px" }}>Chofer / Unidad</th><th style={{ padding: "8px 12px" }}>Infracción y Costo</th><th style={{ padding: "8px 12px", width: 100 }}>Estado</th></tr>
             </thead>
@@ -63,10 +61,10 @@ export function ClientWrapperInfracciones({ tarifas, infraccionesIniciales, movi
         </div>
       )}
 
-      {/* --- VISTA B: PANEL DE TARIFAS RESPONSIVO (SIN ERRORES) --- */}
+      {/* --- VISTA B: PANEL DE TARIFAS CON ARRASTRE HORIZONTAL RESPONSIVO (LÍNEA 75 CORREGIDA) --- */}
       {vistaActual === "TARIFAS" && (
         <div style={{ width: "100%", overflowX: "auto", WebkitOverflowScrolling: "touch", borderRadius: 10, border: "1px solid var(--border-color, #e2e8f0)", background: "var(--bg-tarjeta, #fff)" }}>
-          <table style={{ width: "100%", minWidth: 700, borderCollapse: "collapse", textAlign: "left", fontSize: 13 }}>
+          <table style={{ width: "100%", minWidth: 600, borderCollapse: "collapse", textAlign: "left", fontSize: 13 }}>
             <thead>
               <tr style={{ background: "var(--bg-cabecera, #f8fafc)", borderBottom: "1px solid var(--border-color, #e2e8f0)", color: "#64748b", fontSize: 11, textTransform: "uppercase", fontWeight: 700 }}><th style={{ padding: "8px 12px" }}>Reglamento / Tipo de Falta</th><th style={{ padding: "8px 12px" }}>Monto Fijo Base</th><th style={{ padding: "8px 12px" }}>Tarifa Temporal Especial</th><th style={{ padding: "8px 12px", textAlign: "right", paddingRight: 20 }}>Acciones</th></tr>
             </thead>
@@ -90,7 +88,7 @@ export function ClientWrapperInfracciones({ tarifas, infraccionesIniciales, movi
         </div>
       )}
 
-      {/* --- FORMULARIO MAESTRO --- */}
+      {/* FORMULARIO MAESTRO PARA CREAR/MODIFICAR TIPOS DE FALTA */}
       <ModalFormularioMaestro isOpen={modalTarifaOpen} onClose={() => setModalTarifaOpen(false)} titulo="Administrar catálogo de infracciones" etiquetaBoton="Guardar Configuración de Tarifa" action={action}>
         <CampoFormulario label="Nombre de la infracción / Falta reglamentaria">
           <input name="nombre" required placeholder="Ej. Falta de Uniforme, Abandono de Parada" style={estiloInputGlobal} />
