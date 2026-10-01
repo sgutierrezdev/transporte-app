@@ -1,8 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma"; 
-import { Rol } from "@prisma/client"; // <-- AÑADE ESTA LÍNEA (Si en tu schema está en mayúsculas, usa RROL o ROL)
+import { Rol } from "@prisma/client"; 
 import * as XLSX from "xlsx";
-
 
 function texto(fila: any, columna: string): string {
   if (!fila || !columna || fila[columna] === undefined) return "";
@@ -58,17 +57,15 @@ export async function POST(request: Request) {
               carnet: texto(fila, "Carnet") || null,
               celular: texto(fila, "Celular") || null,
               email: texto(fila, "Correo") || texto(fila, "Email") || null,
-              rol: Rol.SOCIO, // <-- CAMBIA ESTO AQUÍ (Usa Rol.SOCIO o ROL.SOCIO según tu import)
+              rol: Rol.SOCIO, 
               empresa: {
                 connect: { id: empresaId }
               }
             }
           });
           resumen.personas.creados++;
-            }
-          });
-          resumen.personas.creados++;
-
+        } catch (e: any) {
+          resumen.personas.errores.push(`Fila ${i + 2} (${nombre}): ${mensajeError(e)}`);
         }
       }
     }
@@ -93,7 +90,7 @@ export async function POST(request: Request) {
               }
             }
           });
-          resumen.groups.creados++;
+          resumen.grupos.creados++; // Corregido: 'grupos' en lugar de 'groups'
         } catch (e: any) {
           resumen.grupos.errores.push(`Fila ${i + 2} (${nombre}): ${mensajeError(e)}`);
         }
