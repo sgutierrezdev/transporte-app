@@ -12,7 +12,7 @@ export function ComponenteDashboardCliente({ metricas, paradas, actividad }: any
   return (
     <div style={{ width: "100%", display: "flex", flexDirection: "column", gap: "20px" }}>
       
-      {/* 1. SECCIÓN DE MÉTRICAS CON CONTROL EN LÍNEA POR ONCLICK */}
+      {/* 1. SECCIÓN DE MÉTRICAS OPERATIVAS CON CONTROL EN LÍNEA POR ONCLICK */}
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "12px" }}>
         
         {/* Tarjeta Personas */}
@@ -25,7 +25,7 @@ export function ComponenteDashboardCliente({ metricas, paradas, actividad }: any
             <h3 style={{ margin: "2px 0", fontSize: "26px", fontWeight: 800, color: "var(--texto-principal, #0f172a)" }}>{metricas.personas}</h3>
             <p style={{ margin: 0, fontSize: "11px", color: "#94a3b8" }}>Socios, choferes y personal</p>
           </div>
-          <span style={{ color: "#0070f3", fontSize: "16px", fontWeight: "bold", background: "var(--bg-pestañas, #f1f3f9)", width: "28px", height: "28px", borderRadius: "6px", display: "flex", alignItems: "center", justifyCenter: "center", justifyContent: "center" }}>→</span>
+          <span style={{ color: "#0070f3", fontSize: "16px", fontWeight: "bold", background: "var(--bg-pestañas, #f1f3f9)", width: "28px", height: "28px", borderRadius: "6px", display: "flex", alignItems: "center", justifyContent: "center" }}>→</span>
         </div>
 
         {/* Tarjeta Grupos */}
@@ -38,7 +38,7 @@ export function ComponenteDashboardCliente({ metricas, paradas, actividad }: any
             <h3 style={{ margin: "2px 0", fontSize: "26px", fontWeight: 800, color: "var(--texto-principal, #0f172a)" }}>{metricas.grupos}</h3>
             <p style={{ margin: 0, fontSize: "11px", color: "#94a3b8" }}>Líneas y subgrupos de trabajo</p>
           </div>
-          <span style={{ color: "#0070f3", fontSize: "16px", fontWeight: "bold", background: "var(--bg-pestañas, #f1f3f9)", width: "28px", height: "28px", borderRadius: "6px", display: "flex", alignItems: "center", justifyCenter: "center", justifyContent: "center" }}>→</span>
+          <span style={{ color: "#0070f3", fontSize: "16px", fontWeight: "bold", background: "var(--bg-pestañas, #f1f3f9)", width: "28px", height: "28px", borderRadius: "6px", display: "flex", alignItems: "center", justifyContent: "center" }}>→</span>
         </div>
 
         {/* Tarjeta Móviles */}
@@ -51,7 +51,7 @@ export function ComponenteDashboardCliente({ metricas, paradas, actividad }: any
             <h3 style={{ margin: "2px 0", fontSize: "26px", fontWeight: 800, color: "var(--texto-principal, #0f172a)" }}>{metricas.moviles}</h3>
             <p style={{ margin: 0, fontSize: "11px", color: "#94a3b8" }}>Unidades vehiculares activas</p>
           </div>
-          <span style={{ color: "#0070f3", fontSize: "16px", fontWeight: "bold", background: "var(--bg-pestañas, #f1f3f9)", width: "28px", height: "28px", borderRadius: "6px", display: "flex", alignItems: "center", justifyCenter: "center", justifyContent: "center" }}>→</span>
+          <span style={{ color: "#0070f3", fontSize: "16px", fontWeight: "bold", background: "var(--bg-pestañas, #f1f3f9)", width: "28px", height: "28px", borderRadius: "6px", display: "flex", alignItems: "center", justifyContent: "center" }}>→</span>
         </div>
 
         {/* Tarjeta Paradas */}
@@ -64,7 +64,7 @@ export function ComponenteDashboardCliente({ metricas, paradas, actividad }: any
             <h3 style={{ margin: "2px 0", fontSize: "26px", fontWeight: 800, color: "var(--texto-principal, #0f172a)" }}>{metricas.paradas}</h3>
             <p style={{ margin: 0, fontSize: "11px", color: "#94a3b8" }}>Terminales de control activas</p>
           </div>
-          <span style={{ color: "#0070f3", fontSize: "16px", fontWeight: "bold", background: "var(--bg-pestañas, #f1f3f9)", width: "28px", height: "28px", borderRadius: "6px", display: "flex", alignItems: "center", justifyCenter: "center", justifyContent: "center" }}>→</span>
+          <span style={{ color: "#0070f3", fontSize: "16px", fontWeight: "bold", background: "var(--bg-pestañas, #f1f3f9)", width: "28px", height: "28px", borderRadius: "6px", display: "flex", alignItems: "center", justifyContent: "center" }}>→</span>
         </div>
 
       </div>
@@ -96,7 +96,7 @@ export function ComponenteDashboardCliente({ metricas, paradas, actividad }: any
             actividad.map((a: any, index: number) => (
               <div key={a.id || index} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "8px 14px", borderBottom: "1px solid var(--border-color, #f1f5f9)", boxSizing: "border-box" }}>
                 <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                  <div style={{ width: "24px", height: "24px", borderRadius: "50%", background: "var(--bg-pestañas, #f1f3f9)", display: "flex", alignItems: "center", justifyCenter: "center", justifyContent: "center", fontSize: "12px" }}>{a.icono}</div>
+                  <div style={{ width: "24px", height: "24px", borderRadius: "50%", background: "var(--bg-pestañas, #f1f3f9)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "12px" }}>{a.icono}</div>
                   <p style={{ margin: 0, fontSize: "12px", fontWeight: 500, color: "var(--texto-principal, #334155)" }}>{a.texto}</p>
                 </div>
                 <span style={{ fontSize: "11px", color: "#94a3b8", fontFamily: "monospace" }}>{a.hora}</span>
