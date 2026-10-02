@@ -38,9 +38,10 @@ const GRUPOS = [
 export default function SidebarNav() {
   const pathname = usePathname();
   const [abierto, setAbierto] = useState(false);
-  const [escala, setEscala] = useState<"chica" | "mediana" | "grande">("mediana");
+  
+  // Leemos el tamaño guardado o el mediano por defecto
+  const [escala, setEscala] = useState<string>("mediana");
 
-  // Efecto que inyecta la variable CSS directamente en la raíz de la web al hacer clic
   useEffect(() => {
     const root = document.documentElement;
     if (escala === "chica") root.style.setProperty("--escala-fuente", "0.85rem");
@@ -50,15 +51,13 @@ export default function SidebarNav() {
 
   return (
     <>
-      {/* CABECERA SUPERIOR FIJA CON CONTROLES DE ACCESIBILIDAD INTEGRADOS */}
-      <div className="dash-mobile-bar" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%", height: "50px", background: "#1e2761", color: "#fff", padding: "0 16px", position: "fixed", top: 0, zIndex: 1030, boxSizing: "border-box" }}>
-        <div style={{ display: "flex", alignItems: "center" }}>
-          <button onClick={() => setAbierto(true)} className="dash-hamburger">☰</button>
-          <strong style={{ fontSize: "14px" }}>Transporte App</strong>
-        </div>
-
-        {/* SELECTOR DE ACCESIBILIDAD COMPACTO */}
-        <div style={{ display: "flex", gap: "2px", background: "rgba(255,255,255,0.1)", padding: "2px", borderRadius: "4px" }}>
+      {/* CABECERA SUPERIOR MÓVIL ESTÁNDAR */}
+      <div className="dash-mobile-bar">
+        <button onClick={() => setAbierto(true)} className="dash-hamburger">☰</button>
+        <strong style={{ fontSize: "14px" }}>Sistema de Transporte</strong>
+        
+        {/* SELECTOR ADAPTATIVO ADENTRO PARA QUE TAMBIÉN SE VEA EN MÓVILES */}
+        <div style={{ display: "flex", gap: "2px", background: "rgba(255,255,255,0.1)", padding: "2px", borderRadius: "4px", marginLeft: "auto" }}>
           <button type="button" onClick={() => setEscala("chica")} style={{ padding: "3px 6px", fontSize: "10px", fontWeight: "bold", border: "none", borderRadius: "3px", cursor: "pointer", background: escala === "chica" ? "#fff" : "transparent", color: escala === "chica" ? "#1e2761" : "#fff" }}>A-</button>
           <button type="button" onClick={() => setEscala("mediana")} style={{ padding: "3px 6px", fontSize: "10px", fontWeight: "bold", border: "none", borderRadius: "3px", cursor: "pointer", background: escala === "mediana" ? "#fff" : "transparent", color: escala === "mediana" ? "#1e2761" : "#fff" }}>A</button>
           <button type="button" onClick={() => setEscala("grande")} style={{ padding: "3px 6px", fontSize: "10px", fontWeight: "bold", border: "none", borderRadius: "3px", cursor: "pointer", background: escala === "grande" ? "#fff" : "transparent", color: escala === "grande" ? "#1e2761" : "#fff" }}>A+</button>
@@ -87,6 +86,17 @@ export default function SidebarNav() {
             })}
           </div>
         ))}
+
+        {/* SELECTOR ADICIONAL EN LA BARRA LATERAL PARA PANTALLAS GRANDES */}
+        <div style={{ marginTop: "20px", paddingTop: "12px", borderTop: "0.5px solid rgba(255,255,255,.15)" }}>
+          <p style={{ fontSize: "10px", color: "#8aaeff", margin: "0 0 6px 0", fontWeight: 700, textTransform: "uppercase" }}>Tamaño de Pantalla</p>
+          <div style={{ display: "flex", gap: "4px", background: "rgba(0,0,0,0.2)", padding: "3px", borderRadius: "6px" }}>
+            <button type="button" onClick={() => setEscala("chica")} style={{ flex: 1, padding: "4px", fontSize: "11px", fontWeight: "bold", border: "none", borderRadius: "4px", cursor: "pointer", background: escala === "chica" ? "#fff" : "transparent", color: escala === "chica" ? "#1e2761" : "#cadcfc" }}>A-</button>
+            <button type="button" onClick={() => setEscala("mediana")} style={{ flex: 1, padding: "4px", fontSize: "11px", fontWeight: "bold", border: "none", borderRadius: "4px", cursor: "pointer", background: escala === "mediana" ? "#fff" : "transparent", color: escala === "mediana" ? "#1e2761" : "#cadcfc" }}>A</button>
+            <button type="button" onClick={() => setEscala("grande")} style={{ flex: 1, padding: "4px", fontSize: "11px", fontWeight: "bold", border: "none", borderRadius: "4px", cursor: "pointer", background: escala === "grande" ? "#fff" : "transparent", color: escala === "grande" ? "#1e2761" : "#cadcfc" }}>A+</button>
+          </div>
+        </div>
+
         <div style={{ marginTop: 24, paddingTop: 16, borderTop: "0.5px solid rgba(255,255,255,.15)" }}>
           <BotonCerrarSesion claro />
         </div>
