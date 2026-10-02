@@ -1,7 +1,43 @@
 /* ==========================================================================
    AdminLTE Layout Core para Next.js (Responsivo y Tema Dual Nativo)
    ========================================================================== */
+/* --- CORE DE ACCESIBILIDAD UNIVERSAL --- */
+/* --- NÚCLEO DE ACCESIBILIDAD RIGIDO UNIVERSAL --- */
+:root {
+  --escala-fuente: 1rem; /* Mediana por defecto (16px) */
+}
 
+/* Forzamos a que absolutamente todos los textos de la app utilicen la escala dinámica */
+main, div, table, tr, td, th, p, span, h1, h2, h3, h4, label, input, select, button {
+  font-size: calc(var(--escala-fuente) * 0.85) !important; /* Fuerza el redimensionamiento base */
+}
+
+/* Ajustes proporcionales específicos para mantener la jerarquía sin desproporciones */
+h1 {
+  font-size: calc(var(--escala-fuente) * 1.5) !important; /* Títulos grandes */
+}
+
+h2, h3 {
+  font-size: calc(var(--escala-fuente) * 1.25) !important; /* Títulos medianos */
+}
+
+strong, th {
+  font-size: calc(var(--escala-fuente) * 0.85) !important;
+  font-weight: 700 !important;
+}
+
+/* Evitamos que las descripciones pequeñas o iconos se hagan gigantes */
+.dash-nav-titulo, p style, span style {
+  font-size: calc(var(--escala-fuente) * 0.75) !important;
+}
+
+/* Mantenemos fijos únicamente los textos del menú lateral para que no se desborde el sidebar */
+.dash-sidebar, .dash-sidebar * {
+  font-size: 13px !important; 
+}
+.dash-nav-titulo {
+  font-size: 11px !important;
+}
 html, body {
   margin: 0;
   padding: 0;
